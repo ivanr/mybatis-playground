@@ -7,10 +7,18 @@
         <setting name="mapUnderscoreToCamelCase" value="true"/>
         <setting name="localCacheScope" value="STATEMENT"/>
         <setting name="useActualParamName" value="true"/>
-        <setting name="useGeneratedKeys " value="true"/>
+        <setting name="useGeneratedKeys" value="true"/>
     </settings>
 
+    <typeAliases>
+        <!-- Build the aliases from the classes in this package; useful
+             when explicitly configuring type handlers. -->
+        <package name="com.webkreator.mybatis_playground.handlers"/>
+    </typeAliases>
+
     <typeHandlers>
+        <!-- Use all type handlers in the package. -->
+        <package name="com.webkreator.mybatis_playground.handlers"/>
     </typeHandlers>
 
     <environments default="main">
@@ -26,7 +34,7 @@
     </environments>
 
     <mappers>
-        <mapper class="Mapper"/>
+        <mapper class="com.webkreator.mybatis_playground.Mapper"/>
     </mappers>
 
 </configuration>

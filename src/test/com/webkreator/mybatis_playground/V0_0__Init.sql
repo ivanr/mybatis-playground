@@ -1,6 +1,14 @@
-CREATE TABLE test
+CREATE TABLE books
 (
-  id INTEGER NOT NULL,
+  isbn      TEXT   NOT NULL,
 
-  PRIMARY KEY (id)
+  title     TEXT   NOT NULL,
+
+  author    JSONB  NOT NULL,
+
+  editors   TEXT[] NOT NULL,
+
+  reviewers JSONB  NOT NULL,
+
+  PRIMARY KEY (isbn)
 );

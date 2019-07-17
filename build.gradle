@@ -31,6 +31,9 @@ dependencies {
     compileOnly 'org.projectlombok:lombok:1.18.8'
     annotationProcessor 'org.projectlombok:lombok:1.18.8'
 
+    // https://mvnrepository.com/artifact/org.mybatis/mybatis
+    compile group: 'org.mybatis', name: 'mybatis', version: '3.5.2'
+
     // https://mvnrepository.com/artifact/org.postgresql/postgresql
     compile group: 'org.postgresql', name: 'postgresql', version: '42.2.6'
 
@@ -41,6 +44,7 @@ dependencies {
 sourceSets {
     main {
         java.srcDirs = ["src/main"]
+        resources.srcDirs = ["src/main"]
     }
 
     test {
