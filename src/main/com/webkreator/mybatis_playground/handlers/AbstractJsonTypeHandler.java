@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import org.apache.ibatis.type.BaseTypeHandler;
 import org.apache.ibatis.type.JdbcType;
 
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.sql.CallableStatement;
 import java.sql.PreparedStatement;
@@ -13,9 +14,12 @@ import java.sql.SQLException;
 
 public abstract class AbstractJsonTypeHandler<T> extends BaseTypeHandler<T> {
 
-    private static Gson gson = new GsonBuilder().create();
+    private final static Gson gson = new GsonBuilder().create();
 
-    protected abstract Type getType();
+    protected Type getType() {
+        ParameterizedType pt = (ParameterizedType) getClass().getGenericSuperclass();
+        return pt.getActualTypeArguments()[0];
+    }
 
     private T fromJson(String json) {
         return gson.fromJson(json, getType());
