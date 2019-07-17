@@ -1,6 +1,5 @@
 package com.webkreator.mybatis_playground;
 
-import com.webkreator.mybatis_playground.handlers.AuthorAsJson;
 import com.webkreator.mybatis_playground.handlers.StringListAsJsonArray;
 import com.webkreator.mybatis_playground.handlers.StringListAsSqlArray;
 import org.apache.ibatis.annotations.Insert;

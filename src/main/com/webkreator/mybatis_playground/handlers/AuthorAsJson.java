@@ -5,13 +5,11 @@ import com.google.gson.GsonBuilder;
 import com.webkreator.mybatis_playground.Author;
 import org.apache.ibatis.type.BaseTypeHandler;
 import org.apache.ibatis.type.JdbcType;
-import org.apache.ibatis.type.MappedTypes;
 
 import java.sql.CallableStatement;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.List;
 
 public class AuthorAsJson extends BaseTypeHandler<Author> {
 
