@@ -3,6 +3,7 @@ package com.webkreator.mybatis_playground.handlers;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import com.webkreator.mybatis_playground.MybatisGson;
 import org.apache.ibatis.type.BaseTypeHandler;
 import org.apache.ibatis.type.JdbcType;
 import org.apache.ibatis.type.MappedTypes;
@@ -17,17 +18,15 @@ import java.util.List;
 @MappedTypes(StringListAsJsonArray.class) // Prevent MyBatis introspection.
 public class StringListAsJsonArray extends BaseTypeHandler<List<String>> {
 
-    private static Gson gson = new GsonBuilder().create();
-
     private List<String> fromJson(String json) {
         Type listType = new TypeToken<List<String>>() {
         }.getType();
-        return gson.fromJson(json, listType);
+        return MybatisGson.instance().fromJson(json, listType);
     }
 
     @Override
     public void setNonNullParameter(PreparedStatement ps, int i, List<String> list, JdbcType jdbcType) throws SQLException {
-        ps.setString(i, gson.toJson(list));
+        ps.setString(i, MybatisGson.instance().toJson(list));
     }
 
     @Override

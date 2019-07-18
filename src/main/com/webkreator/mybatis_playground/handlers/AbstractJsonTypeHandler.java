@@ -2,6 +2,7 @@ package com.webkreator.mybatis_playground.handlers;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.webkreator.mybatis_playground.MybatisGson;
 import org.apache.ibatis.type.BaseTypeHandler;
 import org.apache.ibatis.type.JdbcType;
 
@@ -14,7 +15,7 @@ import java.sql.SQLException;
 
 public abstract class AbstractJsonTypeHandler<T> extends BaseTypeHandler<T> {
 
-    private final static Gson gson = new GsonBuilder().create();
+    protected final static Gson gson = MybatisGson.instance();
 
     protected Type getType() {
         ParameterizedType pt = (ParameterizedType) getClass().getGenericSuperclass();
