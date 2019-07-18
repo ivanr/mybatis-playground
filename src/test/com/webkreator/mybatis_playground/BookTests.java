@@ -11,78 +11,78 @@ import java.util.List;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class BookTests extends AbstractDatabaseTest {
 
-    private static final String BOOK_ISBN = "9781907117046";
+    public static final String ISBN = "9781907117046";
 
-    private static final Book staticBook;
+    public static final Book BOOK_SINGLETON;
 
     static {
-        staticBook = new Book();
-        staticBook.setIsbn(BOOK_ISBN);
-        staticBook.setTitle("Bulletproof SSL and TLS");
-        staticBook.setAuthor(new Author("Ivan", "Ristic"));
-        staticBook.setEditors(Arrays.asList("Zaphod", "Beeblebrox"));
-        staticBook.setReviewers(Arrays.asList("Arthur", "Dent"));
-        staticBook.setRating(4);
+        BOOK_SINGLETON = new Book();
+        BOOK_SINGLETON.setIsbn(ISBN);
+        BOOK_SINGLETON.setTitle("Bulletproof SSL and TLS");
+        BOOK_SINGLETON.setAuthor(new Author("Ivan", "Ristic"));
+        BOOK_SINGLETON.setEditors(Arrays.asList("Zaphod", "Beeblebrox"));
+        BOOK_SINGLETON.setReviewers(Arrays.asList("Arthur", "Dent"));
+        BOOK_SINGLETON.setRating(4);
     }
 
     @Test
-    public void allTests() {
+    public void testMapper() {
         // Doesn't exist.
 
-        Assert.assertFalse(mapper.existsById(BOOK_ISBN));
-        Assert.assertFalse(mapper.exists(staticBook));
+        Assert.assertFalse(books.existsById(ISBN));
+        Assert.assertFalse(books.exists(BOOK_SINGLETON));
 
         // Insert (single).
 
-        mapper.insert(staticBook);
+        books.insert(BOOK_SINGLETON);
 
-        List<Book> books = mapper.selectAll();
+        List<Book> books = this.books.selectAll();
         Assert.assertEquals(1, books.size());
-        Assert.assertEquals(staticBook, books.get(0));
+        Assert.assertEquals(BOOK_SINGLETON, books.get(0));
 
-        Book book = mapper.selectById(BOOK_ISBN);
+        Book book = this.books.selectById(ISBN);
         Assert.assertNotNull(book);
-        Assert.assertEquals(staticBook, book);
+        Assert.assertEquals(BOOK_SINGLETON, book);
 
-        mapper.delete(staticBook);
+        this.books.delete(BOOK_SINGLETON);
 
         // Insert (list).
 
-        mapper.insertAll(Arrays.asList(staticBook));
+        this.books.insertAll(Arrays.asList(BOOK_SINGLETON));
 
         // Exists.
 
-        Assert.assertTrue(mapper.existsById(BOOK_ISBN));
-        Assert.assertTrue(mapper.exists(staticBook));
+        Assert.assertTrue(this.books.existsById(ISBN));
+        Assert.assertTrue(this.books.exists(BOOK_SINGLETON));
 
         // Delete.
 
-        mapper.delete(staticBook);
-        Assert.assertFalse(mapper.existsById(BOOK_ISBN));
-        Assert.assertFalse(mapper.exists(staticBook));
+        this.books.delete(BOOK_SINGLETON);
+        Assert.assertFalse(this.books.existsById(ISBN));
+        Assert.assertFalse(this.books.exists(BOOK_SINGLETON));
 
-        mapper.insert(staticBook);
-        mapper.deleteById(BOOK_ISBN);
-        Assert.assertFalse(mapper.existsById(BOOK_ISBN));
-        Assert.assertFalse(mapper.exists(staticBook));
+        this.books.insert(BOOK_SINGLETON);
+        this.books.deleteById(ISBN);
+        Assert.assertFalse(this.books.existsById(ISBN));
+        Assert.assertFalse(this.books.exists(BOOK_SINGLETON));
 
-        mapper.insert(staticBook);
-        mapper.deleteAll();
-        Assert.assertFalse(mapper.existsById(BOOK_ISBN));
-        Assert.assertFalse(mapper.exists(staticBook));
+        this.books.insert(BOOK_SINGLETON);
+        this.books.deleteAll();
+        Assert.assertFalse(this.books.existsById(ISBN));
+        Assert.assertFalse(this.books.exists(BOOK_SINGLETON));
 
-        mapper.insert(staticBook);
-        mapper.deleteAll(Arrays.asList(staticBook));
-        Assert.assertFalse(mapper.existsById(BOOK_ISBN));
-        Assert.assertFalse(mapper.exists(staticBook));
+        this.books.insert(BOOK_SINGLETON);
+        this.books.deleteAll(Arrays.asList(BOOK_SINGLETON));
+        Assert.assertFalse(this.books.existsById(ISBN));
+        Assert.assertFalse(this.books.exists(BOOK_SINGLETON));
 
         // Update.
 
-        mapper.insert(staticBook);
-        staticBook.setRating(5); // Was 4.
-        mapper.update(staticBook);
-        book = mapper.selectById(BOOK_ISBN);
+        this.books.insert(BOOK_SINGLETON);
+        BOOK_SINGLETON.setRating(5); // Was 4.
+        this.books.update(BOOK_SINGLETON);
+        book = this.books.selectById(ISBN);
         Assert.assertNotNull(book);
-        Assert.assertEquals(staticBook, book);
+        Assert.assertEquals(BOOK_SINGLETON, book);
     }
 }

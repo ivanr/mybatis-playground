@@ -14,3 +14,16 @@ CREATE TABLE books
 
   PRIMARY KEY (isbn)
 );
+
+CREATE TABLE reviews
+(
+  review_id INTEGER NOT NULL
+    GENERATED ALWAYS AS IDENTITY
+      (START WITH 1),
+
+  isbn      TEXT    NOT NULL REFERENCES books (isbn),
+
+  rating    INTEGER NOT NULL,
+
+  PRIMARY KEY (review_id)
+);

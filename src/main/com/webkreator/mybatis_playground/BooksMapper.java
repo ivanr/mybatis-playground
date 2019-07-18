@@ -6,7 +6,7 @@ import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
-public interface BookMapper {
+public interface BooksMapper {
 
     @Delete("DELETE FROM books B WHERE B.isbn = #{isbn}")
     int delete(Book book);

@@ -20,7 +20,9 @@ public class AbstractDatabaseTest {
 
     protected SqlSession sql;
 
-    protected BookMapper mapper;
+    protected BooksMapper books;
+
+    protected ReviewsMapper reviews;
 
     @Before
     public void initMigrations() throws Exception {
@@ -53,7 +55,9 @@ public class AbstractDatabaseTest {
         Reader reader = Resources.getResourceAsReader(resource);
         sqlSessionFactory = new SqlSessionFactoryBuilder().build(reader, properties);
         sql = sqlSessionFactory.openSession(true);
-        mapper = sql.getMapper(BookMapper.class);
+
+        books = sql.getMapper(BooksMapper.class);
+        reviews = sql.getMapper(ReviewsMapper.class);
     }
 
     @After
