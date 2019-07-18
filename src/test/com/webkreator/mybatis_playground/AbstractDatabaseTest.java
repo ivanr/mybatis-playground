@@ -7,7 +7,6 @@ import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.flywaydb.core.Flyway;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.BeforeClass;
 
 import java.io.FileInputStream;
 import java.io.Reader;
@@ -21,7 +20,7 @@ public class AbstractDatabaseTest {
 
     protected SqlSession sql;
 
-    protected Mapper mapper;
+    protected BookMapper mapper;
 
     @Before
     public void initMigrations() throws Exception {
@@ -54,7 +53,7 @@ public class AbstractDatabaseTest {
         Reader reader = Resources.getResourceAsReader(resource);
         sqlSessionFactory = new SqlSessionFactoryBuilder().build(reader, properties);
         sql = sqlSessionFactory.openSession();
-        mapper = sql.getMapper(Mapper.class);
+        mapper = sql.getMapper(BookMapper.class);
     }
 
     @After

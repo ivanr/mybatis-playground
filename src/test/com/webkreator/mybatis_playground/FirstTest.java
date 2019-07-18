@@ -24,13 +24,13 @@ public class FirstTest extends AbstractDatabaseTest {
 
     @Test
     public void t1_create_books() {
-        mapper.insertBook(staticBook);
+        mapper.insert(staticBook);
         sql.commit();
     }
 
     @Test
     public void t2_get_books() {
-        List<Book> books = mapper.selectAllBooks();
+        List<Book> books = mapper.selectAll();
         //System.out.println(books);
         Assert.assertEquals(1, books.size());
         Assert.assertEquals(staticBook, books.get(0));

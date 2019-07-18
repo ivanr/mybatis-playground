@@ -1,8 +1,7 @@
 package com.webkreator.mybatis_playground.handlers;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.webkreator.mybatis_playground.MybatisGson;
+import com.webkreator.mybatis_playground.gson.MybatisGson;
 import org.apache.ibatis.type.BaseTypeHandler;
 import org.apache.ibatis.type.JdbcType;
 

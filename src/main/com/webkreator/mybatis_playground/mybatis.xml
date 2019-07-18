@@ -34,7 +34,7 @@
     </environments>
 
     <mappers>
-        <mapper class="com.webkreator.mybatis_playground.Mapper"/>
+        <mapper class="com.webkreator.mybatis_playground.BookMapper"/>
     </mappers>
 
 </configuration>
