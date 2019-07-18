@@ -1,7 +1,8 @@
 package com.webkreator.mybatis_playground;
 
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Options;
+import com.webkreator.mybatis_playground.handlers.StringListAsJsonArray;
+import com.webkreator.mybatis_playground.handlers.StringListAsSqlArray;
+import org.apache.ibatis.annotations.*;
 
 public interface ReviewsMapper {
 
@@ -11,4 +12,7 @@ public interface ReviewsMapper {
             "        #{rating})")
     @Options(useGeneratedKeys = true, keyProperty = "reviewId", keyColumn = "review_id")
     int insert(Review review);
+
+    @Select("SELECT * FROM reviews R WHERE R.review_id = #{reviewId}")
+    Review selectById(int reviewId);
 }
