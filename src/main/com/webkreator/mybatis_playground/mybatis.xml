@@ -5,7 +5,15 @@
     <settings>
         <setting name="logImpl" value="SLF4J"/>
         <setting name="mapUnderscoreToCamelCase" value="true"/>
+
+        <!-- The default localCacheScope is SESSION, but it's not clear if one
+             session maps to the entire connection to the database, or just
+             to a checked connection (and the cache is removed when the
+             connection is returned to the pool). In a multi-tenant environment,
+             the same query may return different results. Until that's cleared upm
+             it's safer to change the scope to STATEMENT. -->
         <setting name="localCacheScope" value="STATEMENT"/>
+
         <setting name="useActualParamName" value="true"/>
         <setting name="useGeneratedKeys" value="true"/>
     </settings>
