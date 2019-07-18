@@ -12,10 +12,13 @@ public class ReviewTests extends AbstractDatabaseTest {
         // Insert.
 
         books.insert(BOOK_SINGLETON);
+
         Review review = Review.builder()
                 .isbn(BookTests.ISBN)
                 .rating(5)
                 .build();
+        Assert.assertNull(review.getReviewId());
+
         reviews.insert(review);
         Assert.assertNotNull(review.getReviewId());
         Assert.assertEquals(1, (int) review.getReviewId());
@@ -23,6 +26,6 @@ public class ReviewTests extends AbstractDatabaseTest {
         // Select.
 
         review = reviews.selectById(1);
-        System.out.println(review);
+        Assert.assertEquals(1, (int) review.getReviewId());
     }
 }
