@@ -1,11 +1,13 @@
 package com.webkreator.mybatis_playground;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
 import java.util.List;
 
+@EqualsAndHashCode
 @ToString
 public class Book {
 

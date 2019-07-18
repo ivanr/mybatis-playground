@@ -1,9 +1,11 @@
 package com.webkreator.mybatis_playground;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+@EqualsAndHashCode
 @ToString
 public class Author {
 
