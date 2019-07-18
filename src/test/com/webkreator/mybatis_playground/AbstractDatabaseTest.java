@@ -52,7 +52,7 @@ public class AbstractDatabaseTest {
         String resource = "com/webkreator/mybatis_playground/mybatis.xml";
         Reader reader = Resources.getResourceAsReader(resource);
         sqlSessionFactory = new SqlSessionFactoryBuilder().build(reader, properties);
-        sql = sqlSessionFactory.openSession();
+        sql = sqlSessionFactory.openSession(true);
         mapper = sql.getMapper(BookMapper.class);
     }
 

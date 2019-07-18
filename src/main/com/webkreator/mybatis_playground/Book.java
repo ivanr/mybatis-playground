@@ -30,4 +30,8 @@ public class Book {
     @Getter
     @Setter
     private List<String> reviewers;
+
+    @Getter
+    @Setter
+    private Integer rating;
 }
