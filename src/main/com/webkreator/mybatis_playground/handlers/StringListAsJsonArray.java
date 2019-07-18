@@ -3,6 +3,7 @@ package com.webkreator.mybatis_playground.handlers;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import com.webkreator.mybatis_playground.DisableMybatisIntrospection;
 import com.webkreator.mybatis_playground.MybatisGson;
 import org.apache.ibatis.type.BaseTypeHandler;
 import org.apache.ibatis.type.JdbcType;
@@ -15,7 +16,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
-@MappedTypes(StringListAsJsonArray.class) // Prevent MyBatis introspection.
+@MappedTypes(DisableMybatisIntrospection.class)
 public class StringListAsJsonArray extends BaseTypeHandler<List<String>> {
 
     private List<String> fromJson(String json) {

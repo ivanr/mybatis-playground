@@ -1,11 +1,12 @@
 package com.webkreator.mybatis_playground.handlers;
 
+import com.webkreator.mybatis_playground.DisableMybatisIntrospection;
 import org.apache.ibatis.type.MappedTypes;
 
 import java.sql.Connection;
 import java.util.List;
 
-@MappedTypes(StringListAsSqlArray.class) // Prevent MyBatis introspection.
+@MappedTypes(DisableMybatisIntrospection.class)
 public class StringListAsSqlArray extends AbstractArrayTypeHandler<List<String>> {
 
     @Override
