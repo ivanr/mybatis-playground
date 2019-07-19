@@ -37,7 +37,7 @@ public interface BooksMapper {
             "                   editors,\n" +
             "                   reviewers,\n" +
             "                   rating)\n" +
-            "values (#{isbn},\n" +
+            "VALUES (#{isbn},\n" +
             "        #{title},\n" +
             "        CAST(#{author} AS JSON),\n" +
             "        #{editors,typeHandler=StringListAsSqlArray},\n" +

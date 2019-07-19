@@ -2,9 +2,9 @@ package com.webkreator.mybatis_playground;
 
 import lombok.*;
 
+@Builder
 @EqualsAndHashCode
 @ToString
-@Builder
 public class Review {
 
     @Getter
