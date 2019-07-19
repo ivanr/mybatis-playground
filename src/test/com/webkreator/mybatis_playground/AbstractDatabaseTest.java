@@ -14,7 +14,7 @@ import java.util.Properties;
 
 public class AbstractDatabaseTest {
 
-    private static boolean initialized = false;
+    private boolean initialized = false;
 
     protected SqlSessionFactory sqlSessionFactory;
 
