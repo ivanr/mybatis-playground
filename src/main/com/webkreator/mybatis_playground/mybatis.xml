@@ -2,19 +2,25 @@
 <!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
 <configuration>
 
+    <properties>
+        <!-- Enable default property values. -->
+        <property name="org.apache.ibatis.parsing.PropertyParser.enable-default-value" value="true"/>
+        <!-- Assume Postgres as the database. -->
+        <property name="db.driver" value="org.postgresql.Driver"/>
+    </properties>
+
     <settings>
+        <!-- Log to Slf4j. -->
         <setting name="logImpl" value="SLF4J"/>
+        <!-- With this, column_name in SQL becomes columnName in Java. -->
         <setting name="mapUnderscoreToCamelCase" value="true"/>
-
-        <!-- The default localCacheScope is SESSION, but it's not clear if one
-             session maps to the entire connection to the database, or just
-             to a checked connection (and the cache is removed when the
-             connection is returned to the pool). In a multi-tenant environment,
-             the same query may return different results. Until that's cleared upm
-             it's safer to change the scope to STATEMENT. -->
+        <!-- Restrict the local cache to individual statements only. It is unwise to set this parameter to
+             SESSION, because in that case MyBatis caches query result for the duration of the session,
+             meaning that some repeated queries may not hit the database at all. -->
         <setting name="localCacheScope" value="STATEMENT"/>
-
+        <!-- Allow using actual method parameter names in the mappers. Requires -parameters at compile time. -->
         <setting name="useActualParamName" value="true"/>
+        <!-- Allow use of database-generated keys. -->
         <setting name="useGeneratedKeys" value="true"/>
     </settings>
 
@@ -37,6 +43,33 @@
                 <property name="url" value="${db.url}"/>
                 <property name="username" value="${db.username}"/>
                 <property name="password" value="${db.password}"/>
+            </dataSource>
+        </environment>
+
+        <environment id="POOLED">
+            <transactionManager type="JDBC"/>
+            <dataSource type="POOLED">
+                <property name="driver" value="${db.driver}"/>
+                <property name="url" value="${db.url}"/>
+                <property name="username" value="${db.username}"/>
+                <property name="password" value="${db.password}"/>
+
+                <property name="poolMaximumActiveConnections" value="${db.mybatis.poolMaximumActiveConnections:10}"/>
+                <property name="poolMaximumIdleConnections" value="${db.mybatis.poolMaximumActiveConnections:2}"/>
+                <property name="poolTimeToWait" value="${db.mybatis.poolTimeToWait:5000}"/>
+                <property name="poolMaximumLocalBadConnectionTolerance"
+                          value="${db.mybatis.poolMaximumLocalBadConnectionTolerance:3}"/>
+
+                <!-- MyBatis doesn't support disabling maximum checkout time,
+                     so by default we use a very long value. Judging from
+                     the source code, forced connection reuse happens only
+                     when the pool can't create new connections. -->
+                <property name="poolMaximumCheckoutTime" value="${db.mybatis.poolMaximumCheckoutTime:86400000}"/>
+
+                <property name="poolPingEnabled" value="${db.mybatis.poolPingEnabled:true}"/>
+                <property name="poolPingQuery" value="${db.mybatis.poolPingQuery:SELECT 1}"/>
+                <property name="poolPingConnectionsNotUsedFor"
+                          value="${db.mybatis.poolPingConnectionsNotUsedFor:0}"/>
             </dataSource>
         </environment>
     </environments>
