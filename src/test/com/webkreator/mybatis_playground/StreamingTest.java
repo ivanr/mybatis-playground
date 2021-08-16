@@ -12,7 +12,7 @@ public class StreamingTest extends AbstractDatabaseTest {
         // Use try-with-resources so that the temporary files
         // are automatically removed afterwards.
 
-        try (PersistentResultSet<Integer> results = new PersistentResultSet<>()) {
+        try (PersistentList<Integer> results = new PersistentList<>()) {
             // Stream data from MyBatis into a file on disk.
             streaming.selectAll(results);
 

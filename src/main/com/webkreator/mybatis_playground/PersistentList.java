@@ -11,31 +11,60 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
-public class PersistentResultSet<T> implements AutoCloseable, ResultHandler, Iterable<T> {
+public class PersistentList<T> implements AutoCloseable, ResultHandler, Iterable<T> {
 
+    // The temporary file used as backing storage.
     private final File temporaryFile;
 
+    // The object output stream that serializes the objects into the file.
     private final ObjectOutputStream oos;
 
+    // These are the input streams used by the iterators; we keep
+    // track of them so that we can close them when we're done.
     private final Set<InputStream> streams = new HashSet<>();
 
-    public PersistentResultSet() throws IOException {
-        this.temporaryFile = Files.createTempFile("mybatis-resultset", ".data").toFile();
-        this.oos = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(temporaryFile)));
+    /**
+     * Creates a new persistent list backed by a temporary file created
+     * in the default location. A list must be closed to trigger resource
+     * clean-up.
+     *
+     * @throws IOException
+     */
+    public PersistentList() throws IOException {
+        this.temporaryFile = Files.createTempFile("persistent-list", ".data").toFile();
+        this.oos = new ObjectOutputStream(new BufferedOutputStream(
+                new FileOutputStream(temporaryFile)));
     }
 
+    /**
+     * Writes to the list from a streaming MyBatis result set.
+     *
+     * @param ctx
+     */
     @Override
     @SneakyThrows
     public void handleResult(ResultContext ctx) {
-        T data = (T) ctx.getResultObject();
+        write((T) ctx.getResultObject());
+    }
+
+    /**
+     * Writes one element to the list.
+     *
+     * @param data
+     * @throws IOException
+     */
+    public void write(T data) throws IOException {
         oos.writeObject(data);
     }
 
+    /**
+     * Cleans up the resources. Best used with try-with-resources.
+     */
     @Override
     public void close() {
 
         try {
-            temporaryFile.delete();
+            oos.close();
         } catch (Exception e) {
             // Ignore.
         }
@@ -47,11 +76,18 @@ public class PersistentResultSet<T> implements AutoCloseable, ResultHandler, Ite
                 // Ignore.
             }
         }
+
+        try {
+            temporaryFile.delete();
+        } catch (Exception e) {
+            // Ignore.
+        }
     }
 
     @Override
     @SneakyThrows
-    public Iterator<T> iterator() {
+    public synchronized Iterator<T> iterator() {
+        // Close the output stream when the first iterator is created.
         if (streams.size() == 0) {
             oos.close();
         }
@@ -69,7 +105,7 @@ public class PersistentResultSet<T> implements AutoCloseable, ResultHandler, Ite
 
         private T next;
 
-        MyIterator(PersistentResultSet prh) throws IOException {
+        MyIterator(PersistentList prh) throws IOException {
             ois = new ObjectInputStream(
                     new BufferedInputStream(
                             new FileInputStream(prh.temporaryFile)));
