@@ -24,6 +24,8 @@ public class AbstractDatabaseTest {
 
     protected ReviewsMapper reviews;
 
+    protected StreamingMapper streaming;
+
     @Before
     public void initMigrations() throws Exception {
         // Load properties.
@@ -33,15 +35,14 @@ public class AbstractDatabaseTest {
 
         // Reset the database on the first invocation.
         if (!initialized) {
-
-            Flyway flyway = new Flyway();
-            flyway.setDataSource(
-                    properties.getProperty("db.url"),
-                    properties.getProperty("db.username"),
-                    properties.getProperty("db.password"));
-
-            String packageName = this.getClass().getName().substring(0, this.getClass().getName().lastIndexOf("."));
-            flyway.setLocations("classpath:" + packageName);
+            Flyway flyway = Flyway.configure()
+                    .dataSource(
+                            properties.getProperty("db.url"),
+                            properties.getProperty("db.username"),
+                            properties.getProperty("db.password"))
+                    .locations("com/webkreator/mybatis_playground")
+                    .failOnMissingLocations(true)
+                    .load();
 
             flyway.clean();
             flyway.migrate();
@@ -58,6 +59,7 @@ public class AbstractDatabaseTest {
 
         books = sql.getMapper(BooksMapper.class);
         reviews = sql.getMapper(ReviewsMapper.class);
+        streaming = sql.getMapper(StreamingMapper.class);
     }
 
     @After

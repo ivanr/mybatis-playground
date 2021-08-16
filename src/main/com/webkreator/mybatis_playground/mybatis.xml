@@ -77,6 +77,7 @@
     <mappers>
         <mapper class="com.webkreator.mybatis_playground.BooksMapper"/>
         <mapper class="com.webkreator.mybatis_playground.ReviewsMapper"/>
+        <mapper class="com.webkreator.mybatis_playground.StreamingMapper"/>
     </mappers>
 
 </configuration>
