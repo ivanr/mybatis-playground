@@ -21,7 +21,7 @@ public class PersistentList<T> implements AutoCloseable, ResultHandler, Iterable
 
     // These are the input streams used by the iterators; we keep
     // track of them so that we can close them when we're done.
-    private final Set<InputStream> streams = new HashSet<>();
+    private final Set<InputStream> readStreams = new HashSet<>();
 
     /**
      * Creates a new persistent list backed by a temporary file created
@@ -31,7 +31,7 @@ public class PersistentList<T> implements AutoCloseable, ResultHandler, Iterable
      * @throws IOException
      */
     public PersistentList() throws IOException {
-        this.temporaryFile = Files.createTempFile("persistent-list", ".data").toFile();
+        this.temporaryFile = Files.createTempFile("persistent-list", ".dat").toFile();
         this.oos = new ObjectOutputStream(new BufferedOutputStream(
                 new FileOutputStream(temporaryFile)));
     }
@@ -69,7 +69,7 @@ public class PersistentList<T> implements AutoCloseable, ResultHandler, Iterable
             // Ignore.
         }
 
-        for (InputStream is : streams) {
+        for (InputStream is : readStreams) {
             try {
                 is.close();
             } catch (IOException e) {
@@ -88,7 +88,7 @@ public class PersistentList<T> implements AutoCloseable, ResultHandler, Iterable
     @SneakyThrows
     public synchronized Iterator<T> iterator() {
         // Close the output stream when the first iterator is created.
-        if (streams.size() == 0) {
+        if (readStreams.size() == 0) {
             oos.close();
         }
 
@@ -96,7 +96,7 @@ public class PersistentList<T> implements AutoCloseable, ResultHandler, Iterable
     }
 
     private void rememberToClose(InputStream ois) {
-        streams.add(ois);
+        readStreams.add(ois);
     }
 
     public class MyIterator<T> implements Iterator<T> {
@@ -105,13 +105,15 @@ public class PersistentList<T> implements AutoCloseable, ResultHandler, Iterable
 
         private T next;
 
-        MyIterator(PersistentList prh) throws IOException {
+        MyIterator(PersistentList parent) throws IOException {
             ois = new ObjectInputStream(
                     new BufferedInputStream(
-                            new FileInputStream(prh.temporaryFile)));
-            prh.rememberToClose(ois);
+                            new FileInputStream(parent.temporaryFile)));
+            parent.rememberToClose(ois);
         }
 
+        // Sneaky throws for ClassNotFoundException, which shouldn't
+        // happen, given that we serialized the data in the first place.
         @SneakyThrows
         private T readNext() throws IOException {
             return (T) ois.readObject();
@@ -123,7 +125,7 @@ public class PersistentList<T> implements AutoCloseable, ResultHandler, Iterable
             // we need to read from the stream.
 
             // If we've already read and have the next
-            // element, then we clearly have next.
+            // element, then we clearly have the next.
             if (next != null) {
                 return true;
             }
@@ -133,7 +135,6 @@ public class PersistentList<T> implements AutoCloseable, ResultHandler, Iterable
                 next = readNext();
                 return true;
             } catch (IOException e) {
-                // No next.
                 return false;
             }
         }
