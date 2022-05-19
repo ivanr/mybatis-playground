@@ -19,7 +19,7 @@ MyBatis is a library for OR mapping that tries to do as little as possible. It l
 
 **TODO** It would be nice to be able to validate objects after they are created by MyBatis, maybe even before they're sent to the database. One way to do this would be to use a proxy around the generated mapper, which could check if the manipulated objects support validation, and invoke it.
 
-## Query Name Conventions
+## Method Name Convention
 
 Use the following name conventions for the mapper methods; note that MyBatis doesn't currently support method overloading, but that shouldn't be a big problem if the mappers are kept small (e.g., one mapper per object type).
 
@@ -78,7 +78,7 @@ void selectAll(ResultHandler handler);
 
 Generated mappers are cached on a per-connection basis. In development mode, if the code is updated, a new connection must be created for the new code to be activated.
 
-### Immutable Objects
+## Immutable Objects
 
 MyBatis can create immutable objects provided it can find a constructor it can use. One option is to provide an all-args constructor that sets all the fields. A slightly weaker approach would be to use a no-args constructor, after which the fields can be set directly (via reflection, even if they're private).
 
@@ -91,7 +91,7 @@ Another option is to explicitly configure which constructor should be used, for 
 })
 ```
 
-### SQL Editing in IDEA
+## SQL Editing in IDEA
 
 IDEA has support for SQL editing, which will work with SQL in standalone files, as well as when SQL is embedded in the code. The latter works after IDEA is made aware of the embedded SQL. For more information, see here:
 
@@ -109,6 +109,18 @@ Check both checkboxes.
 Formatting:
 * Leave simple queries as a single line
 * Use IDEA's option for SQL formatting on everything else
+
+## Returning
+
+MyBatis doesn't support RETURNING directly, but there is a [workaround](https://github.com/mybatis/mybatis-3/issues/1293). There is also this bug report that says that MyBatis will not see anything in @Select as an update, meaning it won't rollback everything in certain situations.
+
+```
+// This query uses RETURNING. For MyBatis to handle, we must use @Select + flush cache.
+// See here for more information: https://github.com/mybatis/mybatis-3/issues/1293
+@Select("INSERT INTO ... RETURNING ...")
+@Options(flushCache = Options.FlushCachePolicy.TRUE)
+boolean insertWithReturning(XYZ xyz);
+```
 
 ## Mapper Code Generation
 
