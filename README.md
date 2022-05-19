@@ -1,6 +1,6 @@
 # MyBatis Notes
 
-MyBatis is a library for OR mapping that tries to do as little as possible. It largely focuses on providing helper functionality to map query results to Java objects. How it works:
+MyBatis is a library for OR mapping that tries to do as little as possible. (Doesn't always succeed.) It largely focuses on providing helper functionality to map query results to Java objects. How it works:
 
 * MyBatis has a concept of mappers, which are Java interfaces that define what named queries exist. MyBatis generates the mapping code on the fly.
 
@@ -14,6 +14,17 @@ MyBatis is a library for OR mapping that tries to do as little as possible. It l
 * Type handlers can be written to handle custom mapping. They are triggered based on the Java type (on serializating to SQL) or JDBC type (on deserialization into objects), or can be explicitly requested.
 
    * **WARNING** By default, MyBatis uses introspection to determine which handler to use. Because of type erasure, type handlers that deal with collections are potentially dangerous, as MyBatis may pick the wrong handler. For best results, always use explicit mapping, either via the @MapTypes annotation, or in the SQL. Disable implicit mapping in all other cases.
+
+## WARNINGS
+
+MyBatis comes with a couple of dangerous features enabled by default:
+
+- There is a cache that's at SESSION (connection) level by default. This means that all SELECT statements return the same objects. If the data in the database is changed, subsequent SELECT statements won't see the changes. This can be fixed with `<setting name="localCacheScope" value="STATEMENT"/>`
+
+- When commit and rollback methods are called on a connection, MyBatis doesn't actually performs the requested work if it thinks there were no changes on the connection. In practice, this means that you obtain a connection, SELECT on it, then commit/rollback, then do some more work—you end up with one transaction, not two. This is wrong and may impact the database locks, isolation, etc. As a workaround, use the optional `force` parameter.
+
+- There is also no rollback on close if the connection is not dirty (has updates) but the developers have said that [the connection pool will rollback](https://github.com/mybatis/mybatis-3/issues/2363).
+
 
 ## Object Validation After Deserialization
 
