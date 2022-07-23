@@ -14,6 +14,7 @@ MyBatis is a library for OR mapping that tries to do as little as possible. (Doe
 * Type handlers can be written to handle custom mapping. They are triggered based on the Java type (on serializating to SQL) or JDBC type (on deserialization into objects), or can be explicitly requested.
 
    * **WARNING** By default, MyBatis uses introspection to determine which handler to use. Because of type erasure, type handlers that deal with collections are potentially dangerous, as MyBatis may pick the wrong handler. For best results, always use explicit mapping, either via the @MapTypes annotation, or in the SQL. Disable implicit mapping in all other cases.
+* Documentation: https://mybatis.org/mybatis-3/java-api.html 
 
 ## WARNINGS
 
@@ -76,7 +77,15 @@ Review selectByIdAndAnother(int reviewId, String condition);
 
 ## Avoiding Result Set Buffering
 
-By default, both the database driver and MyBatis may buffer the result set. Use the following approach to control the buffering:
+By default, both the database driver and MyBatis may buffer the result set. Buffering can be avoided using the Cursor class, which implements lazy loading:
+
+```
+@Select("SELECT * FROM large_table")
+@Options(fetchSize = 1000, resultSetType = ResultSetType.FORWARD_ONLY)
+Cursor<User> selectAll();
+```
+
+If you want even more control over how the data is processed, use a ResultHandler, which is what MyBatis uses underneath.
 
 ```
 @Select("SELECT * FROM large_table")
