@@ -132,7 +132,9 @@ Formatting:
 
 ## Returning
 
-MyBatis doesn't support RETURNING directly, but there is a [workaround](https://github.com/mybatis/mybatis-3/issues/1293). The developers didn't explain why the flush is necessary. In my tests, works as intended without the flush and with caching disabled. There is also [this bug](https://github.com/mybatis/mybatis-3/issues/2156) report that says that MyBatis will not see anything in @Select as an update, meaning it won't rollback everything in certain situations.
+MyBatis doesn't support RETURNING directly, but there is a [workaround](https://github.com/mybatis/mybatis-3/issues/1293). The developers didn't explain why the flush is necessary. In my tests, works as intended without the flush and with caching disabled.
+
+However, be warned that your database changes may be implicitly committed when the connection is returned to the pool. See [this bug report](https://github.com/mybatis/mybatis-3/issues/2156) and [this one](https://github.com/mybatis/mybatis-3/issues/2363). It appears that [3.5.12 will get a way to deal with the problem](https://github.com/mybatis/mybatis-3/issues/2156). Overall, it's best to use the StrictSqlSession wrapper from this repository.
 
 ```
 // This query uses RETURNING. For MyBatis to handle, we must use @Select + flush cache.

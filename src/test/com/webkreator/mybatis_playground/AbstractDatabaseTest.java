@@ -1,5 +1,6 @@
 package com.webkreator.mybatis_playground;
 
+import com.webkreator.mybatis_playground.util.StrictSqlSession;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -18,7 +19,7 @@ public class AbstractDatabaseTest {
 
     protected SqlSessionFactory sqlSessionFactory;
 
-    protected SqlSession sql;
+    protected StrictSqlSession sql;
 
     protected BooksMapper books;
 
@@ -55,7 +56,7 @@ public class AbstractDatabaseTest {
         String resource = "com/webkreator/mybatis_playground/mybatis.xml";
         Reader reader = Resources.getResourceAsReader(resource);
         sqlSessionFactory = new SqlSessionFactoryBuilder().build(reader, properties);
-        sql = sqlSessionFactory.openSession(true);
+        sql = new StrictSqlSession(sqlSessionFactory.openSession(true));
 
         books = sql.getMapper(BooksMapper.class);
         reviews = sql.getMapper(ReviewsMapper.class);
