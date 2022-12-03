@@ -32,7 +32,7 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok:1.18.8'
 
     // https://mvnrepository.com/artifact/org.mybatis/mybatis
-    compile group: 'org.mybatis', name: 'mybatis', version: '3.5.2'
+    compile group: 'org.mybatis', name: 'mybatis', version: '3.5.11'
 
     // https://mvnrepository.com/artifact/org.postgresql/postgresql
     compile group: 'org.postgresql', name: 'postgresql', version: '42.2.6'

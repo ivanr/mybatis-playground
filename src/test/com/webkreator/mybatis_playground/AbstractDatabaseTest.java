@@ -1,10 +1,10 @@
 package com.webkreator.mybatis_playground;
 
-import com.webkreator.mybatis_playground.util.StrictSqlSession;
+import com.webkreator.mybatis_playground.util.StrictTransactionsSqlSession;
 import org.apache.ibatis.io.Resources;
-import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
+import org.apache.ibatis.session.TransactionIsolationLevel;
 import org.flywaydb.core.Flyway;
 import org.junit.After;
 import org.junit.Before;
@@ -19,7 +19,7 @@ public class AbstractDatabaseTest {
 
     protected SqlSessionFactory sqlSessionFactory;
 
-    protected StrictSqlSession sql;
+    protected StrictTransactionsSqlSession sql;
 
     protected BooksMapper books;
 
@@ -56,7 +56,7 @@ public class AbstractDatabaseTest {
         String resource = "com/webkreator/mybatis_playground/mybatis.xml";
         Reader reader = Resources.getResourceAsReader(resource);
         sqlSessionFactory = new SqlSessionFactoryBuilder().build(reader, properties);
-        sql = new StrictSqlSession(sqlSessionFactory.openSession(true));
+        sql = new StrictTransactionsSqlSession(sqlSessionFactory.openSession(TransactionIsolationLevel.SERIALIZABLE));
 
         books = sql.getMapper(BooksMapper.class);
         reviews = sql.getMapper(ReviewsMapper.class);

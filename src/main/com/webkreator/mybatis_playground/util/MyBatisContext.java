@@ -31,7 +31,7 @@ public class MyBatisContext implements AutoCloseable {
 
     public SqlSession session() {
         if (session == null) {
-            this.session = new StrictSqlSession(sessionFactory.openSession());
+            this.session = new StrictTransactionsSqlSession(sessionFactory.openSession());
         }
 
         return session;

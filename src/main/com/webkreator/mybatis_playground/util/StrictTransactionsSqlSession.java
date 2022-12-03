@@ -25,161 +25,141 @@ import java.util.Map;
  * behaviour. This wrap always commits or rollbacks as requested, and it also
  * rollbacks on close if the last activity wasn't already a commit or rollback.
  */
-public class StrictSqlSession implements SqlSession {
+public class StrictTransactionsSqlSession implements SqlSession {
 
     private SqlSession original;
 
-    private boolean inTransaction = false;
-
-    public StrictSqlSession(SqlSession original) {
+    public StrictTransactionsSqlSession(SqlSession original) {
         this.original = original;
     }
 
     @Override
     public <T> T selectOne(String statement) {
-        this.inTransaction = true;
         return original.selectOne(statement);
     }
 
     @Override
     public <T> T selectOne(String statement, Object parameter) {
-        this.inTransaction = true;
         return original.selectOne(statement, parameter);
     }
 
     @Override
     public <E> List<E> selectList(String statement) {
-        this.inTransaction = true;
         return original.selectList(statement);
     }
 
     @Override
     public <E> List<E> selectList(String statement, Object parameter) {
-        this.inTransaction = true;
         return original.selectList(statement, parameter);
     }
 
     @Override
     public <E> List<E> selectList(String statement, Object parameter, RowBounds rowBounds) {
-        this.inTransaction = true;
         return original.selectList(statement, parameter, rowBounds);
     }
 
     @Override
     public <K, V> Map<K, V> selectMap(String statement, String mapKey) {
-        this.inTransaction = true;
         return original.selectMap(statement, mapKey);
     }
 
     @Override
     public <K, V> Map<K, V> selectMap(String statement, Object parameter, String mapKey) {
-        this.inTransaction = true;
         return original.selectMap(statement, parameter, mapKey);
     }
 
     @Override
     public <K, V> Map<K, V> selectMap(String statement, Object parameter, String mapKey, RowBounds rowBounds) {
-        this.inTransaction = true;
         return original.selectMap(statement, parameter, mapKey, rowBounds);
     }
 
     @Override
     public <T> Cursor<T> selectCursor(String statement) {
-        this.inTransaction = true;
         return original.selectCursor(statement);
     }
 
     @Override
     public <T> Cursor<T> selectCursor(String statement, Object parameter) {
-        this.inTransaction = true;
         return original.selectCursor(statement, parameter);
     }
 
     @Override
     public <T> Cursor<T> selectCursor(String statement, Object parameter, RowBounds rowBounds) {
-        this.inTransaction = true;
         return original.selectCursor(statement, parameter, rowBounds);
     }
 
     @Override
     public void select(String statement, Object parameter, ResultHandler handler) {
-        this.inTransaction = true;
         original.select(statement, parameter, handler);
     }
 
     @Override
     public void select(String statement, ResultHandler handler) {
-        this.inTransaction = true;
         original.select(statement, handler);
     }
 
     @Override
     public void select(String statement, Object parameter, RowBounds rowBounds, ResultHandler handler) {
-        this.inTransaction = true;
         original.select(statement, parameter, rowBounds, handler);
     }
 
     @Override
     public int insert(String statement) {
-        this.inTransaction = true;
         return original.insert(statement);
     }
 
     @Override
     public int insert(String statement, Object parameter) {
-        this.inTransaction = true;
         return original.insert(statement, parameter);
     }
 
     @Override
     public int update(String statement) {
-        this.inTransaction = true;
         return original.update(statement);
     }
 
     @Override
     public int update(String statement, Object parameter) {
-        this.inTransaction = true;
         return original.update(statement, parameter);
     }
 
     @Override
     public int delete(String statement) {
-        this.inTransaction = true;
         return original.delete(statement);
     }
 
     @Override
     public int delete(String statement, Object parameter) {
-        this.inTransaction = true;
         return original.delete(statement, parameter);
     }
 
     @Override
     public void commit() {
-        // Always force.
-        this.inTransaction = false;
+        // Override MyBatis's default behaviour to always commit.
         original.commit(true);
     }
 
     @Override
     public void commit(boolean force) {
-        // Always force.
-        this.inTransaction = false;
+        if (!force) {
+            throw new IllegalArgumentException("not supported");
+        }
+
         original.commit(true);
     }
 
     @Override
     public void rollback() {
-        // Always force.
-        this.inTransaction = false;
+        // Override MyBatis's default behaviour to always roll back.
         original.rollback(true);
     }
 
     @Override
     public void rollback(boolean force) {
-        // Always force.
-        this.inTransaction = false;
+        if (!force) {
+            throw new IllegalArgumentException("not supported");
+        }
+
         original.rollback(true);
     }
 
@@ -190,11 +170,6 @@ public class StrictSqlSession implements SqlSession {
 
     @Override
     public void close() {
-        if (inTransaction) {
-            this.inTransaction = false;
-            rollback();
-        }
-
         original.close();
     }
 
@@ -218,12 +193,5 @@ public class StrictSqlSession implements SqlSession {
     @Override
     public Connection getConnection() {
         return original.getConnection();
-    }
-
-    public void rollbackIfInTransaction() {
-        if (inTransaction) {
-            inTransaction = false;
-            rollback(true);
-        }
     }
 }
