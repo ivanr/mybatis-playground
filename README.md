@@ -144,6 +144,19 @@ However, be warned that your database changes may be implicitly committed when t
 boolean insertWithReturning(XYZ xyz);
 ```
 
+## Connection Pool Monitoring
+
+Conneection pool state can be observed on instances of PooledDataSource ([JavaDoc](https://mybatis.org/mybatis-3/zh/apidocs/org/apache/ibatis/datasource/pooled/PooledDataSource.html)).
+
+```
+DataSource ds = sessionFactory.getConfiguration().getEnvironment().getDataSource();
+if (ds instanceof PooledDataSource) {
+    PooledDataSource pds = (PooledDataSource) ds;
+    // ...
+}
+
+```
+
 ## Mapper Code Generation
 
 **TODO** Writing mappers by hand is boring; perhaps we can generate them automatically? Something along these lines:
