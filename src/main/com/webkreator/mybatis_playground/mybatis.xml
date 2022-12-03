@@ -36,8 +36,11 @@
     </typeHandlers>
 
     <environments default="main">
+
         <environment id="main">
-            <transactionManager type="JDBC"/>
+            <transactionManager type="JDBC">
+                <property name="skipSetAutoCommitOnClose" value="true"/>
+            </transactionManager>
             <dataSource type="UNPOOLED">
                 <property name="driver" value="${db.driver}"/>
                 <property name="url" value="${db.url}"/>
@@ -46,8 +49,10 @@
             </dataSource>
         </environment>
 
-        <environment id="POOLED">
-            <transactionManager type="JDBC"/>
+        <environment id="pooled">
+            <transactionManager type="JDBC">
+                <property name="skipSetAutoCommitOnClose" value="true"/>
+            </transactionManager>
             <dataSource type="POOLED">
                 <property name="driver" value="${db.driver}"/>
                 <property name="url" value="${db.url}"/>
@@ -67,11 +72,12 @@
                 <property name="poolMaximumCheckoutTime" value="${db.mybatis.poolMaximumCheckoutTime:86400000}"/>
 
                 <property name="poolPingEnabled" value="${db.mybatis.poolPingEnabled:true}"/>
-                <property name="poolPingQuery" value="${db.mybatis.poolPingQuery:SELECT 1}"/>
+                <property name="poolPingQuery" value="${db.mybatis.poolPingQuery:SELECT 'livecheck'}"/>
                 <property name="poolPingConnectionsNotUsedFor"
                           value="${db.mybatis.poolPingConnectionsNotUsedFor:0}"/>
             </dataSource>
         </environment>
+
     </environments>
 
     <mappers>
